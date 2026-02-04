@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DSpace to BibTeX
 
-## Getting Started
+Generate **BibTeX citations for LaTeX** directly from **DSpace repositories**.  
+Paste a DSpace item URL (handle, item UI, or REST endpoint) and instantly get a ready-to-use `.bib` entry.
 
-First, run the development server:
+Supports **DSpace 6 (JSPUI)** and **DSpace 7+ (REST API)**, designed for academic repositories such as theses, articles, and technical reports.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Features
+
+- Generate BibTeX from DSpace repository URLs
+- Supports DSpace 6 (`/handle/...` with `?mode=full`)
+- Supports DSpace 7+ (`/items/<uuid>` and REST API)
+- Automatic Dublin Core metadata extraction
+- Smart BibTeX entry type detection (`thesis`, `article`, `techreport`, `misc`)
+- Safe server-side fetching (SSRF protection, size & timeout limits)
+- Built with Next.js Server Actions
+
+## Supported URL types
+
+The tool automatically detects the correct strategy based on the URL.
+
+### DSpace 7 (REST API)
+
+- `/server/api/core/items/<uuid>`
+- `/api/core/items/<uuid>`
+- `/items/<uuid>` (resolved via REST)
+
+### DSpace 6 / 7 (Handle UI)
+
+- `/handle/<authority>/<id>`  
+  Tries REST first, falls back to `?mode=full` HTML parsing
+
+## Examples
+
+https://repositorio.usfq.edu.ec/handle/23000/14349  
+https://repositorio.uta.edu.ec/items/232db8b3-ad43-41ca-b4c8-8166eb70241c  
+https://repositorio.uta.edu.ec/server/api/core/items/232db8b3-ad43-41ca-b4c8-8166eb70241c
+
+## BibTeX output
+
+The generated BibTeX entry is inferred from Dublin Core metadata.
+
+### Metadata mapping
+
+- Authors: `dc.contributor.author`, `dc.creator`
+- Title: `dc.title`
+- Year: extracted from `dc.date.*`
+- URL: `dc.identifier.uri`
+- Institution / Publisher:
+  - `school` for theses
+  - `institution` for technical reports
+  - `note` for articles when journal is not applicable
+
+### Example
+
+```bibtex
+@thesis{Perez2021modelos,
+  author = {Pérez, Juan},
+  title = {Modelos de optimización en redes},
+  year = {2021},
+  school = {Universidad Técnica de Ambato},
+  url = {https://repositorio.uta.edu.ec/handle/123456789/9999}
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Security considerations
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+All remote requests are executed server-side with strict safety controls:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- SSRF protection (blocks localhost and private IPs)
+- Redirect limit
+- Request timeout
+- Maximum response size
+- Content-Type validation (HTML or JSON only)
 
-## Learn More
+## Tech stack
 
-To learn more about Next.js, take a look at the following resources:
+- Next.js (App Router)
+- React
+- TypeScript
+- cheerio
+- he
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Limitations
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Only Dublin Core metadata is supported
+- BibTeX output only
+- Single-item processing
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
