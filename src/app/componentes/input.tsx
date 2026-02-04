@@ -30,7 +30,7 @@ export default function Input({
         name={id}
         placeholder={placeholder}
         required={required}
-        className="border rounded px-2 py-0 flex-1"
+        className="border rounded px-2 py-1 flex-1"
       >
       </input></>
   )
