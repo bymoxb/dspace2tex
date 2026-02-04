@@ -9,7 +9,7 @@ export default function Error({
   if (hasError) return (<></>);
   return (
     <p className="text-red-600">
-      <pre>{JSON.stringify({ hasError, message })}</pre>
+      {/* <pre>{JSON.stringify({ hasError, message })}</pre> */}
       <span className="font-bold">Error:</span> <span>{message ?? ""}</span>
     </p>
   )
