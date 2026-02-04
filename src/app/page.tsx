@@ -39,19 +39,20 @@ export default function Home() {
           </button>
         </form>
 
-        <Error hasError={state?.ok} message={state?.error} />
+        <Error hasError={state?.ok} message={!state?.ok ? state?.error : ""} />
+
 
         <section className="mt-4 flex flex-col gap-4">
           <Detail
             open
             title="BibTeX"
-            value={state?.bibtex ?? ""}
+            value={state?.ok ? state?.bibtex : ""}
             rows={8}
           />
 
           <Detail
             title="Ver metadatos extraídos"
-            value={state?.meta ? JSON.stringify(state?.meta, null, 4) : null}
+            value={state?.ok ? JSON.stringify(state?.meta, null, 4) : null}
             rows={15}
           />
         </section>
