@@ -3,7 +3,7 @@ export default function Footer() {
         <footer className="min-h-12">
             <div className="container mx-auto text-center">
                 <p className="mt-2">
-                    Proyecto de código abierto <a
+                    Open source project on <a
                         href="https://github.com/bymoxb/dspace2bibtex"
                         target="_blank"
                         className="underline text-blue-500"

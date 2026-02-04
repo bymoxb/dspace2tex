@@ -4,7 +4,7 @@ export const API_PREFIX_CANDIDATES = ['/server/api', '/api'] as const;
 // -------------------- Normalización de URL de entrada --------------------
 export function normalizeInputUrl(raw: string) {
     const u = new URL(raw);
-    if (u.protocol !== 'http:' && u.protocol !== 'https:') throw new Error('Solo se permiten URLs http/https.');
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') throw new Error('Only http/https URLs are allowed.');
     u.hash = '';
     return u;
 }

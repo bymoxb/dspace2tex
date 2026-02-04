@@ -35,7 +35,7 @@ export default function Home() {
             disabled={pending}
             className={"border rounded-2xl px-2 py-1 cursor-pointer min-w-36" + (pending ? " cursor-progress" : "")}
           >
-            {pending ? "Convert..." : 'Convert'}
+            {pending ? "Extracting..." : 'Extract'}
           </button>
         </form>
 
@@ -51,7 +51,7 @@ export default function Home() {
           />
 
           <Detail
-            title="Ver metadatos extraídos"
+            title="View extracted metadata"
             value={state?.ok ? JSON.stringify(state?.meta, null, 4) : null}
             rows={15}
           />

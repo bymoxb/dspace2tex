@@ -29,29 +29,29 @@ export async function fetchWithLimits(startUrl: URL, expect: 'html' | 'json'): P
 
             if (res.status >= 300 && res.status < 400) {
                 const loc = res.headers.get('location');
-                if (!loc) throw new Error('Redirección sin Location.');
+                if (!loc) throw new Error('Redirect without Location header.');
                 current = new URL(loc, current);
                 continue;
             }
 
-            if (!res.ok) throw new Error(`No se pudo obtener el recurso (${res.status}).`);
+            if (!res.ok) throw new Error(`Could not retrieve the resource (${res.status}).`);
 
             const ct = (res.headers.get('content-type') || '').toLowerCase();
             if (expect === 'json' && !ct.includes('application/json')) {
-                throw new Error('La respuesta no es JSON (content-type inesperado).');
+                throw new Error('Response is not JSON (unexpected content-type).');
             }
 
             if (expect === 'html' && !ct.includes('text/html') && !ct.includes('application/xhtml')) {
-                throw new Error('La respuesta no es HTML (content-type inesperado).');
+                throw new Error('Response is not HTML (unexpected content-type).');
             }
 
             const cl = res.headers.get('content-length');
             if (cl) {
                 const n = Number(cl);
-                if (!Number.isNaN(n) && n > MAX_BYTES) throw new Error('El documento es demasiado grande para procesarlo.');
+                if (!Number.isNaN(n) && n > MAX_BYTES) throw new Error('Document is too large to process.');
             }
 
-            if (!res.body) throw new Error('Respuesta vacía.');
+            if (!res.body) throw new Error('Empty response.');
 
             const reader = res.body.getReader();
             const decoder = new TextDecoder('utf-8');
@@ -63,7 +63,7 @@ export async function fetchWithLimits(startUrl: URL, expect: 'html' | 'json'): P
                 if (done) break;
                 if (value) {
                     total += value.byteLength;
-                    if (total > MAX_BYTES) throw new Error('El documento supera el tamaño máximo permitido.');
+                    if (total > MAX_BYTES) throw new Error('Document exceeds the maximum allowed size.');
                     out += decoder.decode(value, { stream: true });
                 }
             }
@@ -72,7 +72,7 @@ export async function fetchWithLimits(startUrl: URL, expect: 'html' | 'json'): P
             return { finalUrl: current, text: out };
         }
 
-        throw new Error('Demasiadas redirecciones.');
+        throw new Error('Too many redirects.');
     } finally {
         clearTimeout(t);
     }

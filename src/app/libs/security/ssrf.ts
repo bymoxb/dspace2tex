@@ -31,22 +31,22 @@ function isPrivateIPv6(ip: string) {
 }
 
 export async function assertSafePublicHost(hostname: string) {
-    if (!hostname) throw new Error('URL inválida (sin host).');
-    if (isLocalhostHost(hostname)) throw new Error('Host no permitido (localhost).');
+    if (!hostname) throw new Error('Invalid URL (no host).');
+    if (isLocalhostHost(hostname)) throw new Error('Host not allowed (localhost).');
 
     const ipType = net.isIP(hostname);
     if (ipType === 4) {
-        if (isPrivateIPv4(hostname)) throw new Error('Host no permitido (IP privada).');
+        if (isPrivateIPv4(hostname)) throw new Error('Host not allowed (private IP).');
         return;
     }
     if (ipType === 6) {
-        if (isPrivateIPv6(hostname)) throw new Error('Host no permitido (IP privada).');
+        if (isPrivateIPv6(hostname)) throw new Error('Host not allowed (private IP).');
         return;
     }
 
     const addrs = await lookup(hostname, { all: true, verbatim: true });
     for (const a of addrs) {
-        if (a.family === 4 && isPrivateIPv4(a.address)) throw new Error('Host no permitido (resuelve a IP privada).');
-        if (a.family === 6 && isPrivateIPv6(a.address)) throw new Error('Host no permitido (resuelve a IP privada).');
+        if (a.family === 4 && isPrivateIPv4(a.address)) throw new Error('Host not allowed (resolves to private IP).');
+        if (a.family === 6 && isPrivateIPv6(a.address)) throw new Error('Host not allowed (resolves to private IP).');
     }
 }
