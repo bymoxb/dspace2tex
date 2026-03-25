@@ -1,3 +1,6 @@
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Callout } from "@radix-ui/themes";
+
 export default function Error({
   hasError,
   message,
@@ -8,9 +11,15 @@ export default function Error({
   if (hasError == undefined) return (<></>);
   if (hasError) return (<></>);
   return (
-    <p className="text-red-600">
-      {/* <pre>{JSON.stringify({ hasError, message })}</pre> */}
-      <span className="font-bold">Error:</span> <span>{message ?? ""}</span>
-    </p>
+    <Callout.Root color="red">
+
+      <Callout.Icon>
+        <ExclamationTriangleIcon />
+      </Callout.Icon>
+
+      <Callout.Text>
+        {message ?? ""}
+      </Callout.Text>
+    </Callout.Root>
   )
 }

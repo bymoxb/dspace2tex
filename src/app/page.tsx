@@ -1,64 +1,71 @@
 "use client"
+import { Box, Button, Container, Flex, Heading, Tabs } from "@radix-ui/themes";
 import { useActionState } from "react";
 import { convertDspaceToBibtex } from "./actions/actions";
-import Detail from "./componentes/detail";
+import { useBackSlash } from "./hooks/use-shortcuts";
+import Input from "./componentes/input";
 import Error from "./componentes/error";
 import Footer from "./componentes/footer";
-import Input from "./componentes/input";
-import { useBackSlash } from "./hooks/use-shortcuts";
+import Detail from "./componentes/detail";
 
 export default function Home() {
 
   const [state, action, pending] = useActionState(convertDspaceToBibtex, null);
 
-  const [searchInputRef, _, setIsFocused] = useBackSlash();
-
   return (
-    <>
-      <main className="container mx-auto grow">
-        <h1 className="text-center font-semibold text-6xl my-4">DSpace2Tex</h1>
-        <form action={action}
-          className="flex flex-col sm:flex-row gap-1 sm:gap-4 items-center"
-        >
-          <Input
-            id="url"
-            type="url"
-            title="DSpace URI/URL"
-            customRef={searchInputRef}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            placeholder="https://repo.edu/handle/1/1"
-            required
-          />
-          <button
-            type="submit"
-            disabled={pending}
-            className={"border rounded-2xl px-2 py-1 cursor-pointer min-w-36" + (pending ? " cursor-progress" : "")}
-          >
-            {pending ? "Extracting..." : 'Extract'}
-          </button>
+    <Container>
+      <Flex direction="column" gap="2" p="4">
+        <Heading size="8">DSpace2Tex</Heading>
+
+        <form action={action}>
+          <Flex gap="3" my="4">
+            <Input
+              autoFocus
+              id="url"
+              name="url"
+              type="url"
+              placeholder="DSpace URI/URL: https://repo.edu/handle/1/1"
+              required
+            />
+            <Button
+              type="submit"
+              loading={pending}
+              disabled={pending}
+            >
+              {pending ? "Extracting..." : 'Extract'}
+            </Button>
+          </Flex>
         </form>
 
         <Error hasError={state?.ok} message={!state?.ok ? state?.error : ""} />
 
+        <Box>
+          <Tabs.Root defaultValue="1">
+            <Tabs.List>
+              <Tabs.Trigger value="1">BibTeX</Tabs.Trigger>
+              <Tabs.Trigger value="2">Metadata</Tabs.Trigger>
+            </Tabs.List>
 
-        <section className="mt-4 flex flex-col gap-4">
-          <Detail
-            open
-            title="BibTeX"
-            value={state?.ok ? state?.bibtex : ""}
-            rows={8}
-          />
+            <Box pt="3">
+              <Tabs.Content value="1">
+                <Detail
+                  value={state?.ok ? state?.bibtex : ""}
+                  rows={15}
+                />
+              </Tabs.Content>
 
-          <Detail
-            title="View extracted metadata"
-            value={state?.ok ? JSON.stringify(state?.meta, null, 4) : null}
-            rows={15}
-          />
-        </section>
-      </main>
+              <Tabs.Content value="2">
+                <Detail
+                  value={state?.ok ? JSON.stringify(state?.meta, null, 4) : null}
+                  rows={20}
+                />
+              </Tabs.Content>
+            </Box>
+          </Tabs.Root>
+        </Box>
 
-      <Footer />
-    </> 
+        <Footer /> {/* El Footer siempre está al final */}
+      </Flex>
+    </Container>
   );
 }

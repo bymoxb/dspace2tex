@@ -2,29 +2,26 @@ import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from
 
 export function useBackSlash(): [
   RefObject<any>,
-  boolean,
-  Dispatch<SetStateAction<boolean>>
 ] {
-  const [isFocused, setIsFocused] = useState(false);
-  const searchInputRef = useRef<any>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const handleKeyDown = (event: any) => {
-      if (!searchInputRef.current) return;
+    const handleKeyDown = (e: any) => {
+      const tag = e.target.tagName.toLowerCase();
+      if (tag === "input" || tag === "textarea") return;
 
-      // Si el input está enfocado, no prevenimos la acción (dejamos que el usuario escriba '/')
-      if (event.key === '/' && document.activeElement !== searchInputRef.current) {
-        event.preventDefault();  // Prevenimos la acción solo si el campo no está enfocado
-        searchInputRef.current.focus();  // Ponemos el foco en el input
+      if (e.key === "/") {
+        e.preventDefault();
+        searchRef.current?.focus();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
-  return [searchInputRef, isFocused, setIsFocused]
+  return [searchRef]
 }

@@ -1,37 +1,32 @@
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Kbd, TextField } from "@radix-ui/themes";
+import { useBackSlash } from "../hooks/use-shortcuts";
+
 export default function Input({
-  customRef,
-  onBlur,
-  onFocus,
-  title,
-  placeholder,
-  id,
   type,
-  required,
+  ...props
 }: {
   id: string,
-  type: string
-  title: string,
+    type: string,
+    name: string,
   required?: boolean;
-  placeholder?: string,
-  customRef: any,
+    placeholder?: string,
   onFocus?: () => void,
   onBlur?: () => void,
+    autoFocus?: boolean;
 }) {
+  const [ref] = useBackSlash();
+
   return (
     <>
-      <label htmlFor="url" className="">{title}</label>
-      <input
-        ref={customRef}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        //
-        type={type}
-        id={id}
-        name={id}
-        placeholder={placeholder}
-        required={required}
-        className="border rounded px-2 py-1 flex-1"
-      >
-      </input></>
+      <TextField.Root ref={ref} type={type as any} style={{ width: "100%" }} {...props}>
+        <TextField.Slot>
+          <MagnifyingGlassIcon height="16" width="16" />
+        </TextField.Slot>
+        <TextField.Slot>
+          <Kbd>/</Kbd>
+        </TextField.Slot>
+      </TextField.Root>
+    </>
   )
 }

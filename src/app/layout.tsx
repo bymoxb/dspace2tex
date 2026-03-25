@@ -1,5 +1,8 @@
+import { Theme as ThemeRUI } from "@radix-ui/themes";
 import type { Metadata } from "next";
+import { ThemeProvider } from "next-themes";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -47,13 +50,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} flex flex-col`}>
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <ThemeProvider attribute="class" defaultTheme="dark">
+          <ThemeRUI
+            radius="full"
+            accentColor="grass"
+          >
+            {children}
+          </ThemeRUI>
+        </ThemeProvider>
       </body>
+
     </html>
   );
 }
