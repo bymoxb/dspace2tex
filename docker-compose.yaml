@@ -1,0 +1,9 @@
+services:
+  ap:
+    build:
+      context: .
+      dockerfile: dockerfile
+    image: dspace2tex:local
+    container_name: dspace2tex-local
+    ports:
+      - 3000:3000
