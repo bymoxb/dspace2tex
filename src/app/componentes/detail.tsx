@@ -1,57 +1,58 @@
-import { Box, Button, IconButton, TextArea } from "@radix-ui/themes";
+import { Box, Button, TextArea, Flex } from "@radix-ui/themes";
 import { useState } from "react";
+import { CopyIcon, CheckIcon } from "@radix-ui/react-icons";
 
 export default function Detail({
   value,
-  open,
   rows,
   readOnly = true,
-  className,
 }: {
-    // title: string,
   value: string | null,
-  open?: boolean;
-  rows?: number | undefined,
-  readOnly?: boolean | undefined,
-  className?: string;
+    rows?: number,
+    readOnly?: boolean,
 }) {
   return (
-    <Box className="box">
-      <CopyButton value={value} className="copy-button" />
+    <Box position="relative">
+      <Box position="absolute" top="2" right="2" style={{ zIndex: 1 }}>
+        <CopyButton value={value} />
+      </Box>
+
       <TextArea
         readOnly={readOnly}
         value={value ?? ""}
-        wrap="off"
+        variant="surface"
+        resize="vertical"
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '13px',
+          backgroundColor: 'var(--gray-2)'
+        }}
         rows={rows}
-        className="border rounded w-full p-1"
       />
     </Box>
   )
 }
 
-enum CLIPBOARD {
-  COPY = '📋 Copy',
-  OK_COPY = '✅ Copied'
-}
+function CopyButton({ value }: { value: string | null }) {
+  const [copied, setCopied] = useState(false);
 
-function CopyButton({ value, className = "" }: { value: string | null, className?: string }) {
-  const [cText, setCText] = useState(CLIPBOARD.COPY);
+  const handleCopy = () => {
+    if (!value) return;
+    navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <Button
-      color="indigo"
-      onClick={() => {
-        if (cText === CLIPBOARD.OK_COPY) return;
-        navigator.clipboard.writeText(value ?? "");
-        setCText(CLIPBOARD.OK_COPY);
-        setTimeout(() => {
-          setCText(CLIPBOARD.COPY);
-        }, 1000);
-      }}
-      className={"border rounded px-2 py-1 cursor-pointer " + className}
-
+      size="1"
+      variant="soft"
+      color={copied ? "green" : "indigo"}
+      onClick={handleCopy}
+      style={{ cursor: 'pointer' }}
     >
-      {cText}
+      {copied ? <CheckIcon /> : <CopyIcon />}
+      {copied ? "Copied" : "Copy"}
     </Button>
   )
 }

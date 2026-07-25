@@ -1,5 +1,5 @@
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { Kbd, TextField } from "@radix-ui/themes";
+import { Box, Kbd, TextField } from "@radix-ui/themes";
 import { useBackSlash } from "../hooks/use-shortcuts";
 
 export default function Input({
@@ -11,22 +11,25 @@ export default function Input({
     name: string,
   required?: boolean;
     placeholder?: string,
-  onFocus?: () => void,
-  onBlur?: () => void,
     autoFocus?: boolean;
 }) {
   const [ref] = useBackSlash();
 
   return (
-    <>
-      <TextField.Root ref={ref} type={type as any} style={{ width: "100%" }} {...props}>
-        <TextField.Slot>
-          <MagnifyingGlassIcon height="16" width="16" />
-        </TextField.Slot>
-        <TextField.Slot>
-          <Kbd>/</Kbd>
-        </TextField.Slot>
-      </TextField.Root>
-    </>
+    <TextField.Root
+      ref={ref}
+      size="3"
+      type={type as any}
+      {...props}
+    >
+      <TextField.Slot>
+        <MagnifyingGlassIcon height="18" width="18" />
+      </TextField.Slot>
+      <TextField.Slot pr="3">
+        <Box display={{ initial: 'none', sm: 'block' }}>
+          <Kbd size="2">/</Kbd>
+        </Box>
+      </TextField.Slot>
+    </TextField.Root>
   )
 }
