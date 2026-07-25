@@ -17,7 +17,7 @@ export default function Home() {
           <header>
             <Heading size="8" mb="1" align="center">DSpace2Tex</Heading>
             <Text color="gray" size="2" align="center" as="p">
-              Convierte registros de DSpace a BibTeX al instante.
+              Instantly convert DSpace records to BibTeX.
             </Text>
           </header>
 
