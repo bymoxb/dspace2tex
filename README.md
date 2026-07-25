@@ -5,6 +5,8 @@ Paste a DSpace item URL (handle, item UI, or REST endpoint) and instantly get a 
 
 Supports **DSpace 6 (JSPUI)** and **DSpace 7+ (REST API)**, designed for academic repositories such as theses, articles, and technical reports.
 
+🚀 **Try the live application:** https://dspace2tex.illapa.dev/
+
 ## Features
 
 - Generate BibTeX from DSpace repository URLs
