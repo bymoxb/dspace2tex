@@ -11,6 +11,9 @@ on:
         required: true
         default: ''
 
+permissions:
+  contents: read
+
 env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/dspace2tex
 
