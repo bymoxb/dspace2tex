@@ -1,0 +1,529 @@
+---
+
+---
+
+<div
+  class="min-h-screen bg-[#f6f6f4] px-4 py-6 font-sans text-zinc-800 selection:bg-amber-100 selection:text-zinc-950 sm:px-6 sm:py-8"
+>
+  <main class="mx-auto w-full max-w-4xl">
+    <div class="flex flex-col gap-6 sm:gap-8">
+      <!-- Header -->
+      <header class="space-y-2">
+        <h1
+          class="text-4xl font-semibold tracking-[-0.055em] text-zinc-950 sm:text-5xl"
+        >
+          DSpace<span class="text-amber-600">2</span>BibTeX
+        </h1>
+
+        <p class="max-w-md text-sm leading-6 text-zinc-500 sm:text-base">
+          Turn DSpace repository records into clean, ready-to-use BibTeX
+          citations.
+        </p>
+      </header>
+
+      <!-- URL form -->
+      <section>
+        <form id="url-form" class="space-y-2">
+          <label for="url" class="mb-2 block text-sm font-medium text-zinc-800">
+            Repository URL
+          </label>
+
+          <div class="flex flex-col gap-2 sm:flex-row">
+            <div class="group relative min-w-0 flex-1">
+              <svg
+                aria-hidden="true"
+                class="pointer-events-none absolute left-3.5 top-1/2 size-[18px] -translate-y-1/2 text-zinc-400 transition-colors group-focus-within:text-amber-600"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+              >
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m16 16 4 4" stroke-linecap="round"></path>
+              </svg>
+
+              <input
+                type="url"
+                id="url"
+                name="url"
+                required
+                autofocus
+                spellcheck="false"
+                placeholder="https://repo.edu/handle/1/1"
+                class="h-11 w-full rounded-lg border border-zinc-200 bg-white pl-10 pr-4 text-sm text-zinc-900 shadow-sm shadow-zinc-950/[0.02] outline-none transition placeholder:text-zinc-400 hover:border-zinc-300 focus:border-amber-600 focus:ring-2 focus:ring-amber-600/10"
+              />
+            </div>
+
+            <button
+              id="btn-extract"
+              type="submit"
+              class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-zinc-900 px-5 text-sm font-medium text-white transition hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <span id="extract-text">Extract</span>
+
+              <svg
+                aria-hidden="true"
+                class="size-4 text-zinc-400 transition-transform group-hover:translate-x-0.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path
+                  d="M5 12h14m-6-6 6 6-6 6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </div>
+
+          <p class="pt-1 text-xs leading-5 text-zinc-400">
+            Paste a public DSpace record URL to extract its citation.
+          </p>
+        </form>
+      </section>
+
+      <!-- Output editor -->
+      <section
+        class="overflow-hidden rounded-xl border border-zinc-200 bg-white"
+      >
+        <!-- Tabs -->
+        <div
+          class="flex items-center gap-5 border-b border-zinc-200 px-4 sm:px-5"
+          role="tablist"
+          aria-label="Output format"
+        >
+          <button
+            type="button"
+            id="tab-btn-bibtex"
+            role="tab"
+            aria-selected="true"
+            aria-controls="panel-bibtex"
+            class="relative -mb-px border-b-2 border-amber-600 py-3 text-xs font-semibold text-zinc-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+          >
+            BibTeX
+          </button>
+
+          <button
+            type="button"
+            id="tab-btn-json"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-json"
+            class="relative -mb-px border-b-2 border-transparent py-3 text-xs font-medium text-zinc-400 transition-colors hover:text-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+          >
+            Metadata (JSON)
+          </button>
+        </div>
+
+        <!-- Editor -->
+        <div class="bg-[#fafaf9] p-3 sm:p-4">
+          <div
+            class="overflow-hidden rounded-lg border border-zinc-200 bg-white"
+          >
+            <!-- File header -->
+            <div
+              class="flex h-10 items-center justify-between gap-3 border-b border-zinc-100 px-3 sm:px-4"
+            >
+              <div class="flex min-w-0 items-center gap-2">
+                <span class="size-1.5 shrink-0 rounded-full bg-amber-500"
+                ></span>
+
+                <span
+                  id="output-filename"
+                  class="truncate font-mono text-[11px] text-zinc-500"
+                >
+                  citation.bib
+                </span>
+              </div>
+
+              <button
+                type="button"
+                id="btn-copy"
+                disabled
+                class="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-600 transition hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="size-3.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                >
+                  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+                  <path
+                    d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"
+                    stroke-linecap="round"></path>
+                </svg>
+
+                <span id="copy-text">Copy</span>
+              </button>
+            </div>
+
+            <!-- BibTeX -->
+            <div
+              id="panel-bibtex"
+              role="tabpanel"
+              aria-labelledby="tab-btn-bibtex"
+            >
+              <textarea
+                id="output-bibtex"
+                readonly
+                rows="8"
+                spellcheck="false"
+                aria-label="BibTeX output"
+                placeholder="Generated citation..."
+                class="block min-h-56 w-full resize-y border-0 bg-transparent p-4 font-mono text-xs leading-6 text-zinc-700 outline-none selection:bg-amber-100 sm:p-5"
+              ></textarea>
+            </div>
+
+            <!-- JSON -->
+            <div
+              id="panel-json"
+              hidden
+              role="tabpanel"
+              aria-labelledby="tab-btn-json"
+            >
+              <textarea
+                id="output-json"
+                readonly
+                rows="8"
+                spellcheck="false"
+                aria-label="JSON metadata output"
+                placeholder="Record metadata..."
+                class="block min-h-56 w-full resize-y border-0 bg-transparent p-4 font-mono text-xs leading-6 text-zinc-700 outline-none selection:bg-amber-100 sm:p-5"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div
+          class="flex items-center justify-between gap-2 border-t border-zinc-100 bg-white px-4 py-2.5 sm:px-5"
+        >
+          <span
+            id="output-description"
+            role="status"
+            aria-live="polite"
+            class="text-[11px] text-zinc-400 transition-colors"
+          >
+            No citation generated yet.
+          </span>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer
+        class="flex flex-col gap-2 border-t border-zinc-200/80 pt-4 text-xs text-zinc-400 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <p>Built for researchers, by researchers.</p>
+
+        <a
+          href="https://github.com/bymoxb/dspace2tex"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex w-fit items-center gap-2 font-medium text-zinc-600 transition hover:text-amber-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+        >
+          <svg
+            aria-hidden="true"
+            class="size-4"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.54v-2.1c-3.1.67-3.75-1.31-3.75-1.31-.5-1.28-1.24-1.62-1.24-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15.99 1.7 2.6 1.21 3.23.92.1-.72.39-1.21.71-1.49-2.47-.28-5.07-1.24-5.07-5.5 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.95 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.12-1.44 3.05-1.14 3.05-1.14.61 1.53.12.67.12 2.95.71.78 1.14 1.77 1.14 2.99 0 4.27-2.61 5.22-5.1 5.49.4.35.35 1.02.35 2.06v3.08c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z"
+            ></path>
+          </svg>
+          View on GitHub
+        </a>
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+  import { actions } from "astro:actions";
+
+  type OutputTab = "bibtex" | "json";
+  type RequestState = "idle" | "loading" | "success" | "error";
+
+  const form = document.querySelector<HTMLFormElement>("#url-form");
+  const urlInput = document.querySelector<HTMLInputElement>("#url");
+  const extractButton =
+    document.querySelector<HTMLButtonElement>("#btn-extract");
+  const extractText = document.querySelector<HTMLSpanElement>("#extract-text");
+
+  const bibtexOutput =
+    document.querySelector<HTMLTextAreaElement>("#output-bibtex");
+  const jsonOutput =
+    document.querySelector<HTMLTextAreaElement>("#output-json");
+
+  const tabBibtex =
+    document.querySelector<HTMLButtonElement>("#tab-btn-bibtex");
+  const tabJson = document.querySelector<HTMLButtonElement>("#tab-btn-json");
+  const panelBibtex = document.querySelector<HTMLDivElement>("#panel-bibtex");
+  const panelJson = document.querySelector<HTMLDivElement>("#panel-json");
+
+  const copyButton = document.querySelector<HTMLButtonElement>("#btn-copy");
+  const copyText = document.querySelector<HTMLSpanElement>("#copy-text");
+  const outputFilename =
+    document.querySelector<HTMLSpanElement>("#output-filename");
+  const outputDescription = document.querySelector<HTMLSpanElement>(
+    "#output-description",
+  );
+
+  let activeTab: OutputTab = "bibtex";
+  let requestState: RequestState = "idle";
+  let requestId = 0;
+  let copyFeedbackTimer: ReturnType<typeof setTimeout> | undefined;
+
+  function setTab(tab: OutputTab) {
+    activeTab = tab;
+
+    if (
+      !tabBibtex ||
+      !tabJson ||
+      !panelBibtex ||
+      !panelJson ||
+      !outputFilename
+    ) {
+      return;
+    }
+
+    const isBibtex = tab === "bibtex";
+
+    tabBibtex.setAttribute("aria-selected", String(isBibtex));
+    tabJson.setAttribute("aria-selected", String(!isBibtex));
+    tabBibtex.tabIndex = isBibtex ? 0 : -1;
+    tabJson.tabIndex = isBibtex ? -1 : 0;
+
+    tabBibtex.className = isBibtex
+      ? "relative -mb-px border-b-2 border-amber-600 py-3 text-xs font-semibold text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-600"
+      : "relative -mb-px border-b-2 border-transparent py-3 text-xs font-medium text-zinc-500 transition hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-600";
+
+    tabJson.className = !isBibtex
+      ? "relative -mb-px border-b-2 border-amber-600 py-3 text-xs font-semibold text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-600"
+      : "relative -mb-px border-b-2 border-transparent py-3 text-xs font-medium text-zinc-500 transition hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-600";
+
+    panelBibtex.hidden = !isBibtex;
+    panelJson.hidden = isBibtex;
+    outputFilename.textContent = isBibtex ? "citation.bib" : "metadata.json";
+
+    resetCopyFeedback();
+  }
+
+  function setDescription(text: string, state: RequestState = "idle") {
+    if (!outputDescription) return;
+
+    outputDescription.textContent = text;
+
+    const colorClasses: Record<RequestState, string> = {
+      idle: "text-zinc-400",
+      loading: "text-amber-600 font-medium",
+      success: "text-emerald-600 font-medium",
+      error: "text-red-600 font-medium",
+    };
+
+    outputDescription.className = `text-[11px] transition-colors ${colorClasses[state]}`;
+  }
+
+  function setRequestState(state: RequestState, message = "") {
+    requestState = state;
+
+    if (extractButton) {
+      extractButton.disabled = state === "loading";
+      extractButton.setAttribute("aria-busy", String(state === "loading"));
+    }
+
+    if (extractText) {
+      extractText.textContent =
+        state === "loading"
+          ? "Extracting..."
+          : state === "success"
+            ? "Extract again"
+            : "Extract citation";
+    }
+
+    if (message) {
+      setDescription(message, state);
+    }
+  }
+
+  function resetCopyFeedback() {
+    if (copyFeedbackTimer) {
+      clearTimeout(copyFeedbackTimer);
+      copyFeedbackTimer = undefined;
+    }
+
+    if (copyText) {
+      copyText.textContent = "Copy";
+    }
+  }
+
+  function getActiveOutput() {
+    return activeTab === "bibtex" ? bibtexOutput : jsonOutput;
+  }
+
+  function clearOutputs() {
+    if (bibtexOutput) bibtexOutput.value = "";
+    if (jsonOutput) jsonOutput.value = "";
+    if (copyButton) copyButton.disabled = true;
+
+    setDescription("No citation generated yet.", "idle");
+  }
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (!form || !urlInput || !extractButton) return;
+    if (requestState === "loading") return;
+
+    resetCopyFeedback();
+
+    if (!urlInput.validity.valid || !urlInput.value.trim()) {
+      urlInput.setAttribute("aria-invalid", "true");
+      setRequestState(
+        "error",
+        urlInput.validity.valueMissing
+          ? "Please enter a repository URL."
+          : "Please enter a valid URL, including https://.",
+      );
+      urlInput.focus();
+      return;
+    }
+
+    urlInput.removeAttribute("aria-invalid");
+    const currentRequestId = ++requestId;
+
+    setRequestState("loading", "Fetching the repository record...");
+
+    try {
+      const { data, error } = await actions.search(new FormData(form));
+
+      if (currentRequestId !== requestId) return;
+
+      if (error) {
+        setRequestState(
+          "error",
+          error.message || "The server could not process this record.",
+        );
+        return;
+      }
+
+      if (!data) {
+        setRequestState(
+          "error",
+          "The server returned no citation data. Please try again.",
+        );
+        return;
+      }
+
+      if (!bibtexOutput || !jsonOutput) return;
+
+      bibtexOutput.value = data.bibtex ?? "";
+      jsonOutput.value = JSON.stringify(data.meta ?? {}, null, 2);
+
+      const hasOutput = Boolean(
+        bibtexOutput.value.trim() || jsonOutput.value.trim(),
+      );
+
+      if (!hasOutput) {
+        setRequestState(
+          "error",
+          "The record was processed, but no citation data was returned.",
+        );
+        return;
+      }
+
+      if (copyButton) copyButton.disabled = false;
+
+      setTab("bibtex");
+      setRequestState("success", "Citation generated successfully.");
+    } catch (error: unknown) {
+      if (currentRequestId !== requestId) return;
+
+      const message =
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while generating the citation.";
+
+      setRequestState("error", message);
+    }
+  });
+
+  tabBibtex?.addEventListener("click", () => setTab("bibtex"));
+  tabJson?.addEventListener("click", () => setTab("json"));
+
+  function handleTabKeydown(event: KeyboardEvent) {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+    event.preventDefault();
+    const nextTab = activeTab === "bibtex" ? "json" : "bibtex";
+    setTab(nextTab);
+    (nextTab === "bibtex" ? tabBibtex : tabJson)?.focus();
+  }
+
+  tabBibtex?.addEventListener("keydown", handleTabKeydown);
+  tabJson?.addEventListener("keydown", handleTabKeydown);
+
+  copyButton?.addEventListener("click", async () => {
+    const output = getActiveOutput();
+    const value = output?.value ?? "";
+
+    if (!value.trim() || !copyText) return;
+
+    resetCopyFeedback();
+
+    try {
+      await navigator.clipboard.writeText(value);
+      copyText.textContent = "Copied!";
+
+      copyFeedbackTimer = setTimeout(() => {
+        if (copyText) copyText.textContent = "Copy";
+      }, 1800);
+    } catch {
+      if (!output) return;
+
+      output.focus();
+      output.select();
+      const copied = document.execCommand("copy");
+      copyText.textContent = copied ? "Copied!" : "Select and copy";
+
+      copyFeedbackTimer = setTimeout(() => {
+        if (copyText) copyText.textContent = "Copy";
+      }, 1800);
+    }
+  });
+
+  urlInput?.addEventListener("input", () => {
+    if (urlInput.validity.valid) {
+      urlInput.removeAttribute("aria-invalid");
+      if (requestState === "error") {
+        setRequestState("idle", "Ready to generate citation.");
+      }
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    const target = event.target;
+
+    if (
+      event.key === "/" &&
+      !event.ctrlKey &&
+      !event.metaKey &&
+      !event.altKey &&
+      target instanceof HTMLElement &&
+      !target.isContentEditable &&
+      target.tagName !== "INPUT" &&
+      target.tagName !== "TEXTAREA" &&
+      target.tagName !== "SELECT"
+    ) {
+      event.preventDefault();
+      urlInput?.focus();
+    }
+  });
+
+  setTab("bibtex");
+  clearOutputs();
+</script>
