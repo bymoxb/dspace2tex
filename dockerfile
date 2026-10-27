@@ -45,12 +45,12 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
-ENV PORT=4321
+ENV PORT=3000
 
 COPY --from=production-deps --chown=nonroot:nonroot /app/node_modules ./node_modules
 COPY --from=builder --chown=nonroot:nonroot /app/dist ./dist
 COPY --from=builder --chown=nonroot:nonroot /app/package.json ./package.json
 
-EXPOSE 4321
+ENV PORT=3000
 
 CMD ["./dist/server/entry.mjs"]
