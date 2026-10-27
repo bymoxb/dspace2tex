@@ -1,3 +1,4 @@
+
 name: Docker Build and Push to Docker Hub
 
 on:
@@ -7,8 +8,8 @@ on:
   workflow_dispatch:
     inputs:
       manual_version:
-        description: 'Versión manual (ej: 1.2.3). Dejar vacío para usar "latest" únicamente.'
-        required: true
+        description: 'Versión (ej: 1.2.3, 1.2.3-rc.1). Vacío para publicar solo latest.'
+        required: false
         default: ''
 
 permissions:
@@ -44,9 +45,9 @@ jobs:
           images: ${{ env.IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=${{ github.event.inputs.manual_version }},enable=${{ github.event.inputs.manual_version != '' }}
-            type=raw,value=latest
+            type=semver,pattern={{major}}.{{minor}},enable=${{ !contains(github.ref, '-rc.') && !contains(github.event.inputs.manual_version, '-rc.') }}
+            type=raw,value=${{ github.event.inputs.manual_version }},enable=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.manual_version != '' }}
+            type=raw,value=latest,enable=${{ !contains(github.ref, '-rc.') && !contains(github.event.inputs.manual_version, '-rc.') && (github.event_name == 'push' || github.event.inputs.manual_version != '') }}
 
       # Construye y sube la imagen
       - name: Build and push Docker image
