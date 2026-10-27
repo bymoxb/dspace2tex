@@ -1,4 +1,4 @@
-# DSpace to BibTeX
+# DSpace to BibTeX - DSpace2BibTeX
 
 Generate **BibTeX citations for LaTeX** directly from **DSpace repositories**.  
 Paste a DSpace item URL (handle, item UI, or REST endpoint) and instantly get a ready-to-use `.bib` entry.
@@ -9,38 +9,23 @@ Supports **DSpace 6 (JSPUI)** and **DSpace 7+ (REST API)**, designed for academi
 
 ## Features
 
-- Generate BibTeX from DSpace repository URLs
-- Supports DSpace 6 (`/handle/...` with `?mode=full`)
-- Supports DSpace 7+ (`/items/<uuid>` and REST API)
-- Automatic Dublin Core metadata extraction
-- Smart BibTeX entry type detection (`thesis`, `article`, `techreport`, `misc`)
-- Safe server-side fetching (SSRF protection, size & timeout limits)
-- Built with Next.js Server Actions
+- Supports DSpace 6 repositories and DSpace 7 or later.
+- Accepts item, handle, and REST API URLs.
+- Extracts Dublin Core metadata from the DSpace REST API or, when available, the DSpace `?mode=full` page.
+- Infers a BibTeX entry type: `thesis`, `article`, `techreport`, or `misc`.
+- Displays the generated BibTeX citation and extracted metadata as JSON.
+- Fetches repository records server-side with protections for private hosts, redirects, request time, and response size.
 
-## Supported URL types
+## Supported URLs
 
-The tool automatically detects the correct strategy based on the URL.
+The application detects the URL format and selects the appropriate retrieval method.
 
-### DSpace 7 (REST API)
-
-- `/server/api/core/items/<uuid>`
-- `/api/core/items/<uuid>`
-- `/items/<uuid>` (resolved via REST)
-
-### DSpace 6 / 7 (Handle UI)
-
-- `/handle/<authority>/<id>`  
-  Tries REST first, falls back to `?mode=full` HTML parsing
-
-## Examples
-
-https://repositorio.usfq.edu.ec/handle/23000/14349  
-https://repositorio.uta.edu.ec/items/232db8b3-ad43-41ca-b4c8-8166eb70241c  
-https://repositorio.uta.edu.ec/server/api/core/items/232db8b3-ad43-41ca-b4c8-8166eb70241c
-
-## BibTeX output
-
-The generated BibTeX entry is inferred from Dublin Core metadata.
+| Repository | URL format | Retrieval method |
+| --- | --- | --- |
+| DSpace 6 | `/handle/<prefix>/<suffix>` | Reads Dublin Core metadata from the `?mode=full` page. |
+| DSpace 7+ | `/handle/<prefix>/<suffix>` | Resolves the handle through the REST API. |
+| DSpace 7+ | `/items/<uuid>` | Looks up the item through the REST API. |
+| DSpace 7+ | `/server/api/core/items/<uuid>` or `/api/core/items/<uuid>` | Reads the item directly from the REST API. |
 
 ### Metadata mapping
 
@@ -56,12 +41,12 @@ The generated BibTeX entry is inferred from Dublin Core metadata.
 ### Example
 
 ```bibtex
-@thesis{Perez2021modelos,
-  author = {Pérez, Juan},
-  title = {Modelos de optimización en redes},
-  year = {2021},
-  school = {Universidad Técnica de Ambato},
-  url = {https://repositorio.uta.edu.ec/handle/123456789/9999}
+@thesis{anonymous2021optimization,
+    author = {{Anonymous}},
+    title = {Optimization Models in Networks},
+    year = {2021},
+    school = {Example University},
+    url = {https://example.com/repository/optimization-models-2021}
 }
 ```
 
@@ -77,9 +62,7 @@ All remote requests are executed server-side with strict safety controls:
 
 ## Tech stack
 
-- Next.js (App Router)
-- React
-- TypeScript
+- Astro
 - cheerio
 - he
 
@@ -89,6 +72,17 @@ All remote requests are executed server-side with strict safety controls:
 - BibTeX output only
 - Single-item processing
 
+## Run locally
+
+Requires Node.js `>=22.23.4` and pnpm.
+
+```sh
+pnpm install
+pnpm dev
+```
+
+Create a production build with `pnpm build` and run it locally with `pnpm preview`.
+
 ## License
 
-MIT
+[MIT](./LICENSE)

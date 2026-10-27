@@ -1,0 +1,56 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "DSpace2BibTeX",
+  description = "Free online tool to generate BibTeX citations directly from DSpace repositories. Supports DSpace 6 and DSpace 7 (REST API). Perfect for LaTeX and academic writing.",
+} = Astro.props;
+
+// const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta
+      name="keywords"
+      content="DSpace BibTeX, DSpace to BibTeX, DSpace citation generator, BibTeX from DSpace, LaTeX DSpace citation, DSpace repository BibTeX"
+    />
+
+    <meta name="author" content="bymoxb" />
+    <meta name="creator" content="bymoxb" />
+    <meta name="publisher" content="bymoxb" />
+
+    <meta name="robots" content="index, follow" />
+
+    <!-- Canonical -->
+    <!-- <link rel="canonical" href={canonicalURL.href} /> -->
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta
+      property="og:description"
+      content="Generate BibTeX citations from DSpace repositories (DSpace 6 & 7). Paste a handle or item URL and get a .bib entry instantly."
+    />
+    <meta property="og:site_name" content="bymoxb" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
